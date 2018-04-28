@@ -10,7 +10,7 @@ by adding `crc` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:crc, git: "https://github.com/Ne-Ice/ugly_crc", :branch "master"}
+    {:crc, git: "https://github.com/Ne-Ice/ugly_crc"}
   ]
 end
 ```
