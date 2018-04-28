@@ -1,4 +1,4 @@
-# Crc
+# CRC
 
 CRC8 module for Elixir
 
