@@ -9,25 +9,14 @@ defmodule CRC do
     crc8_calculation(data, 0x31, 0x00, true, true, 0x00)
   end
 
-  def crc8_calculation(<<first_byte :: size(8), other_bytes :: binary>>, polynomial, initial, ref_in, ref_out, xor_out) when ref_in == true do
-    crc_byte = initial ^^^ reverce_byte(first_byte)
+  defp crc8_calculation(<<first_byte :: size(8), other_bytes :: binary>>, polynomial, initial, ref_in, ref_out, xor_out) do
+    crc_byte = initial ^^^ if ref_in do reverce_byte(first_byte) else first_byte end
     crc_byte = crc8_loop(crc_byte, polynomial, ref_out)
     crc8_calculation(other_bytes, polynomial, crc_byte, ref_in, ref_out, xor_out)
   end
 
-  def crc8_calculation(<<first_byte :: size(8), other_bytes :: binary>>, polynomial, initial, ref_in, ref_out, xor_out) when ref_in == false do
-    crc_byte = initial ^^^ first_byte
-    crc_byte = crc8_loop(crc_byte, polynomial, ref_out)
-    crc8_calculation(other_bytes, polynomial, crc_byte, ref_in, ref_out, xor_out)
-  end
-
-  def crc8_calculation(<<>>, _, crc_byte, _, false, xor_out) do
-    bxor(crc_byte, xor_out)
-  end
-
-  def crc8_calculation(<<>>, _, crc_byte, _, true, xor_out) do
-    reverce_byte(crc_byte)
-    |> bxor(xor_out)
+  defp crc8_calculation(<<>>, _, crc_byte, _, ref_out, xor_out) do
+    bxor(if ref_out do reverce_byte(crc_byte) else crc_byte end, xor_out)
   end
 
   defp crc8_loop(crc_byte, poly, ref_out, counter \\ 0)
@@ -51,7 +40,7 @@ defmodule CRC do
     crc_byte
   end
 
-  def reverce_byte(byte) do
+  defp reverce_byte(byte) do
     :math.fmod((byte * 0x202020202) &&& 0x10884422010, 1023)
     |> round
   end
