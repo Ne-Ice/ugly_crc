@@ -26,14 +26,14 @@ defmodule CRC do
   defp crc8_loop(crc_byte, poly, ref_out, counter \\ 0)
   defp crc8_loop(crc_byte, poly, ref_out, counter) when counter < 8 do
     if ((crc_byte &&& 0x80) != 0) do
-      :math.fmod((crc_byte <<< 1), 256) |> round |> bxor(poly)
+      rem((crc_byte <<< 1), 256) |> bxor(poly)
     else
-      :math.fmod((crc_byte <<< 1), 256) |> round
+      rem((crc_byte <<< 1), 256)
     end
     |> crc8_loop(poly, ref_out, counter + 1)
   end
 
   defp crc8_loop(crc_byte, _, _, 8) do crc_byte end
 
-  defp reverce_byte(byte) do :math.fmod((byte * 0x202020202) &&& 0x10884422010, 1023) |> round end
+  defp reverce_byte(byte) do rem((byte * 0x202020202) &&& 0x10884422010, 1023) end
 end
